@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Angular Bootstrap Menu</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <button type="submit" class="btn btn-dark" (click)="alta()">Nuevo pedido</button>
+        </li>
+        <li class="nav-item">
+          <button type="submit" class="btn btn-dark" (click)="Modificacion()">Consulta</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-4" id="alta" *ngIf="mostrarElementonuevo">
+      <label><h1>Nuevo pedido </h1></label>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Fecha:</span>
+          </div>
+          <input type="text" class="form-control" id="fechacreacion" [value]="fechaYHora" [readOnly]="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="nombrescliente">Nombre cliente</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="nombrescliente" #nombrescliente placeholder="Ingrese el valor del Campo 2" required>
+        </div>
+      </div>
+      <div class="alert alert-info" role="alert">
+        <div class="form-group">
+          <label for="articulo">Articulo</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="articulo" #articulo placeholder="Articulo 1" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="PrecioArticulo">Precio Articulo</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="PrecioArticulo" #PrecioArticulo placeholder="10" required>
+            <div class="input-group-append">
+              <span class="input-group-text">.00</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="Cantidadarticulos">Cantidad articulos</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="Cantidadarticulos" #Cantidadarticulos placeholder="1" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="cargaproductos()">Agregar producto al pedido </button>
+        <p></p>
+        <div class="form-group">
+          <label>Productos del pedidos</label>
+          <ul>
+            <li *ngFor="let item of listaElementos">
+              <strong>Nombre:</strong> {{ item.nombreproducto }}, <strong>Precio:</strong> {{ item.precio }}, <strong>Cantidad:</strong> {{ item.cantidad }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="subtotal">Subtotal</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="subtotal" #subtotal placeholder="0.0" [readOnly]="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="IVA">IVA</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="IVA"  #IVA placeholder="0.0" [readOnly]="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="Total">Total</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="Total" #Total  placeholder="0.0" [readOnly]="true">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="newpedidos()" >Enviar</button>
+  </div>
+  <div class="container mt-4" id="consultaelemnto" *ngIf="consultaelemnto">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <div class="input-group">
+          <input type="date" class="form-control" id="dpInicio" #dpInicio>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="fechaFin">Fecha de Fin:</label>
+        <div class="input-group">
+          <input type="date" class="form-control" id="dpFin" #dpFin>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="Consultapedidos()">Consulta pedidos</button>
+    <div id="tabaladatos" *ngIf="tabaladatos">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Fecha de alta</th>
+            <th>Fecha de cancelacion</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>subtotal</th>
+            <th>IVA</th>
+            <th>Total</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let filass of listainfromacionfiltrada; let i = index">
+            <td>{{ filass.Id }}</td>
+            <td>{{ filass.Fechacrea }}</td>
+            <td>{{ filass.Fechaelim }}</td>
+            <td>{{ filass.Ciente }}</td>
+            <td><ul>
+              <li *ngFor="let itemss of filass.prodcutospedido">
+                <strong>Nombre:</strong> {{ itemss.nombreproducto }}, <strong>Precio:</strong> {{ itemss.precio }}, <strong>Cantidad:</strong> {{ itemss.cantidad }}
+              </li>
+            </ul></td>
+            <td>{{ filass.subtotal.toFixed(2) }}</td>
+            <td>{{ filass.iva.toFixed(2) }}</td>
+            <td>{{ filass.total.toFixed(2) }}</td>
+            <td>{{ filass.estatus }}</td>
+            <td>
+              <button (click)="obtenerValores(filass)">Cancelar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <router-outlet ngSkipHydration></router-outlet>
+</body>
+</html>
+
